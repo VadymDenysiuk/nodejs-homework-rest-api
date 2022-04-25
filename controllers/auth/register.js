@@ -1,6 +1,7 @@
 const { User } = require('../../models/user')
 const { joiSchema } = require('../../models/user')
 const bcrypt = require('bcryptjs');
+const gravatar = require('gravatar')
 const { validation } = require('../../middlewares/validation');
 
 const register = async(req, res, next) => {
@@ -17,15 +18,15 @@ const register = async(req, res, next) => {
       res.status(409).json({
         message: "Email in use"
       })
-      
     }
-
-    await User.create({subscription, email, password: hashPassword})
+    const avatarUrl = gravatar.url(email);
+    await User.create({subscription, email, password: hashPassword, avatarUrl})
 
     res.status(201).json({
       user: {
         email,
-        subscription
+        subscription,
+        avatarUrl
       }
     })
     } catch (error) {

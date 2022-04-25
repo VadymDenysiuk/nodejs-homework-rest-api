@@ -11,15 +11,15 @@ const router = express.Router();
 
 router.get('/', auth, getAll);
 
-router.get('/:contactId', getById)
+router.get('/:contactId', getById);
 
-router.post('/', auth, add)
+router.post('/', auth, add);
 
-router.delete('/:contactId', remove)
+router.delete('/:contactId', remove);
 
-router.put('/:contactId', update)
+router.put('/:contactId', update);
 
-router.patch('/:contactId/favorite', updateFavorite)
+router.patch('/:contactId/favorite', updateFavorite);
 
-module.exports = router
+module.exports = router;
 
