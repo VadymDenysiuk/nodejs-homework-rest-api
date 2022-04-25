@@ -13,19 +13,13 @@ const login = async(req, res, next) => {
     validation(validationResult, res)
 
     const user = await User.findOne({email})
-    if(!user) {
-      return res.status(401).json({
-        message: "Email or password is wrong"
-      })
-    }
     const passCompare = bcrypt.compareSync(password, user.password)
 
-    if(!passCompare) {
+    if(!user || !user.verify || !passCompare) {
       return res.status(401).json({
-        message: "Email or password is wrsong"
+        message: "Email is wrong or not verify, or password is wrong"
       })
     }
-
     const payload = {
       id: user._id
     }

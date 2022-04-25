@@ -3,6 +3,9 @@ const { joiSchema } = require('../../models/user')
 const bcrypt = require('bcryptjs');
 const gravatar = require('gravatar')
 const { validation } = require('../../middlewares/validation');
+const {v4} = require('uuid');
+const { sendMail } = require('../../helpers/sendMail');
+
 
 const register = async(req, res, next) => {
   try {
@@ -19,14 +22,24 @@ const register = async(req, res, next) => {
         message: "Email in use"
       })
     }
+    const verificationToken = v4()
+
     const avatarUrl = gravatar.url(email);
-    await User.create({subscription, email, password: hashPassword, avatarUrl})
+    await User.create({subscription, email, password: hashPassword, avatarUrl, verificationToken})
+  
+    const mail = {
+      to: email,
+      subject: 'Confirm email',
+      html: `<a target='_blanc' href='http:localhost:3000/api/users/verify/${verificationToken}'>Confirm your email</a>`
+    }
+    await sendMail(mail)
 
     res.status(201).json({
       user: {
         email,
         subscription,
-        avatarUrl
+        avatarUrl,
+        verificationToken
       }
     })
     } catch (error) {
